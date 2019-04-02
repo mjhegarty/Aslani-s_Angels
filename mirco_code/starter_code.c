@@ -3,7 +3,8 @@
 //Wiring: GND of HC-05 to GND Arduino, VCC of HC-05 to VCC Arduino, TX HC-05 to Arduino Pin 10 (RX) RX HC-05 to Arduino Pin 11 (TX) 
 SoftwareSerial bt (1, 0); // RX | TX
 
-//int sensorPin = A0;
+pinMode(A3, INPUT);
+int sensorPin = A3;
 
 //int sensorValue = 0;
 int btdata;
@@ -13,7 +14,7 @@ void setup() {
 }
 
 void loop() {
-    btdata = 5;//analogRead(analogPin);  // read the input pin
+    btdata = analogRead(sensorPin);  // read the input pin
     //values need to be seperated by commas and end in semicolon
 
     bt.print(String(btdata) + " was sent");
