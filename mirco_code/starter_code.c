@@ -16,7 +16,7 @@ void loop() {
     btdata = 5;//analogRead(analogPin);  // read the input pin
     //values need to be seperated by commas and end in semicolon
 
-    bt.print(String(btdata) + "was sent");
+    bt.print(String(btdata) + " was sent");
     bt.print("\n");
     //digitalWrite(";");
     //bt.println ("worked!\n");
