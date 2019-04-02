@@ -1,4 +1,4 @@
-# Aslanis_Angels
+# BluetoothSwiss
 Wireless sleep sensor data aquisition platform
 
 
