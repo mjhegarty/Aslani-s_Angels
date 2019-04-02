@@ -82,7 +82,7 @@ class Application(tk.Frame):
         #canvas2.get_tk_widget().pack(side = "bottom")
 
     def pairing(self):
-        call("./python_test.sh")
+        call("./blue_connect.sh")
     def say_hi(self):
         if (self.start["text"]=="start"):  
             self.start["text"] = "stop"
