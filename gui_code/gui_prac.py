@@ -7,14 +7,14 @@ from subprocess import call
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-def make_graph(x):
+def make_graph(x, canvas):
    fig = Figure(figsize=(6,6))
    a = fig.add_subplot(111)
    a.set_title ="test"
    a.plot(x, range(len(x)))
    return fig
 
-def show_graph(self, canvas):
+def show_graph(self):
     if (self.graph["text"] == "show graph"):
         print("got to show")
         canvas.get_tk_widget().pack(side = "bottom")
@@ -55,6 +55,7 @@ class Application(tk.Frame):
         
         fig1 = make_graph([1,2,3,4,5])
         canvas = FigureCanvasTkAgg(fig1, master=self)
+        
 
 
         self.graph = tk.Button(self)
