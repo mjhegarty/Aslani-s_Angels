@@ -7,13 +7,29 @@ import subprocess
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-def make_graph(x):
-   fig = Figure(figsize=(6,6))
-   a = fig.add_subplot(111)
-   a.set_title ="test"
-   a.plot(x, range(len(x)))
-   return fig
 
+
+
+def make_graph(x):
+    fig = Figure(figsize=(6,6))
+    a = fig.add_subplot(111)
+    a.set_title ="test"
+    a.plot(x, range(len(x)))
+    return fig
+
+def make_graph_from_file():
+    f = open("demofile.txt", "r") 
+    #TODO make this results.txt
+    x = list(map(int, f)) 
+    fig = Figure(figsize=(6,6))
+    a = fig.add_subplot(111)
+    a.set_title ="test"
+    a.plot(range(len(x)), x)
+    plt.figure()
+    plt.plot(range(len(x)), x)
+    plt.savefig("img.png")
+    f.close()
+    return fig
 
 class my_button():
     def __init__(self, frame):
@@ -46,7 +62,7 @@ class Application(tk.Frame):
         self.start.pack(side="top", fill=both, expand=1)
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
-                              command=self.master.destroy)
+                              command= lambda:quit())
         self.quit.pack(side="left", fill=both, expand=1)
 
         self.pair = tk.Button(self)
@@ -63,11 +79,11 @@ class Application(tk.Frame):
         self.graph = tk.Button(self)
         self.graph["text"] = "show graph"
         self.graph["fg"] = "blue"
-        self.graph["command"] = lambda: self.show_graph(fig1)
+        self.graph["command"] = lambda: self.show_graph()
         self.graph.pack(side="right", fill=both, expand=1)
 
     def pairing(self):
-        subprocess.call("./blue_connect.sh")
+        subprocess.Popen(("./blue_connect.sh"))
     def get_data(self, p=None): 
         if (self.start["text"]=="start"):  
             self.start["text"] = "stop"
@@ -84,11 +100,13 @@ class Application(tk.Frame):
             self.start["text"] = "stop"
             self.start["fg"] = "red"
             subprocess.call("./python_test.sh")
+            #TODO make this run_code.sh
         else:
             self.start["text"]="start"
             self.start["fg"]= "green"
 
-    def show_graph(self, fig1):
+    def show_graph(self):
+        fig1 = make_graph_from_file()
         print ("pushed button")
         canvas = FigureCanvasTkAgg(fig1, master=self)
         if (self.graph["text"] == "show graph"):
@@ -102,3 +120,4 @@ class Application(tk.Frame):
 root = tk.Tk()
 app = Application(master=root)
 app.mainloop()
+
