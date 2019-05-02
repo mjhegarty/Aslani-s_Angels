@@ -22,6 +22,14 @@
 import serial
 from time import sleep
 
-bluetoothSerial = serial.Serial( "/dev/rfcomm0", baudrate=9600 )
-print bluetoothSerial.readline()
-
+bluetoothSerial = serial.Serial( "/dev/rfcomm0", baudrate=9600, timeout=1 )
+print (bluetoothSerial.name)
+while (True):
+    try:
+        print (bluetoothSerial.read(20))
+        #in_Blue = bluetoothSerial.readline()
+        #print_blue = float(in_Blue)* 5 / 1023
+        #print (bluetoothSerial.readline())
+        sleep(.5)
+    except IOError:
+        pass
