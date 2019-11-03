@@ -39,21 +39,15 @@ void loop(){
     //Serial.print("test");
     if (status==1){
         cli();
-        XBee.print(data2);
+        XBee.print(data);
         XBee.print("$");
         status=0;
         sei();
     }
 }
-/*
-void loop(){
-
-}
-*/
 ISR(TIMER1_COMPA_vect)
 {
-    int data = analogRead(A0);
+    data = analogRead(A0);
     status=1;
-    data2= (data2+1)%2000;
-    //XBee.print(data2);
+    //data2= (data2+1)%2000;
 }

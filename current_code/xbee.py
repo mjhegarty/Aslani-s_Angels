@@ -54,7 +54,7 @@ def main():
     print(" |       Wireless Sleep Monitoring         |")
     print(" |         \"No Strings Attached!\"          |")
     print(" +-----------------------------------------+\n")
-    inp = input("Press any key to start! \nIf you want to see print statements hit v")
+    inp = input("Press any enter to start! \nIf you want to see print statements hit v first")
     if inp=='v':
         Verbose = True
     else:
