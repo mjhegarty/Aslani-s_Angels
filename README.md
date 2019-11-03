@@ -4,7 +4,7 @@
 
 ### System Overview
 
-Codewise ATM there are only 2 segements, the on-patient mircocontroller and the Raspberry Pi.
+Codewise there are 2 sections, the on-patient mircocontroller and the Raspberry Pi.
 
 The mircocontroller is an Arduino Uno r3, and it converts analog sensor data to digital data using
 `Analogread` inside a timer ISR that happens every 2ms aka sampling at 500Hz. This digital data is then passed
@@ -33,7 +33,6 @@ have each sample have a unique stop character.
 * Attach the Arduino's digital pin #3 to the XBee's DIN pin
 
 #### Raspberry Pi / Linux
-##### Installation
 * On the device run `git clone https://github.com/mjhegarty/WirelessSleepMonitoring.git` to get the code
 * Run `sudo apt install python3` & `sudo apt install python3-pip` to get python and the pip, a python package manager
 * Run `pip3 install matplotlib numpy digi-xbee --user` To get the python packages you need
