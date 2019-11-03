@@ -1,6 +1,7 @@
 from digi.xbee.devices import XBeeDevice
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 
@@ -12,49 +13,75 @@ BAUD_RATE= 230400
 #! /usr/bin/python
 
 class data():
-    def __init__(self):
+    def __init__(self, v):
         self.arr = []
+        #TODO make array of arrays for different sample types
+        self.sample=''
+        self.v = v
+    def data_stream(self,packet):
+        for i in packet:  
+            #TODO make a dictionary of special chars that will be used for different sample types
+            if(i!='$' and i!='\n' and i!=''):
+                self.sample = self.sample+i
+                #print(self.sample)
+            elif(i=='$'):
+                self.add_data(int(self.sample))
+                if(self.v==True):
+                    print(self.sample)
+                    print("\n")
+                self.sample=''
     def add_data(self,data):
-        #print(int.from_bytes(data.rstrip(),"big"))
-        print(data)
-        #print(5*int(data.decode('UTF-8'))/1023)
-        #self.arr.append(5*int(data.decode('UTF-8'))/1023)
         self.arr.append(data/1023)
     def graph_data(self):
-        print(self.arr)
+        #TODO add axis
+        #TODO export into csv file
         plt.plot(range(len(self.arr)),self.arr)
+        plt.title("Data over time")
         plt.show()
-        
-
-
+    def data_spectrum(self):
+        #TODO test this
+        f = np.fft.fft(self.arr)
+        freq = np.fft.fftfreq(f.shape[-1], d=.002)
+        plt.plot(freq,abs(f))
+        plt.title("spectrum of data")
+        plt.show()
 
 
 
 
 def main():
     print(" +-----------------------------------------+")
-    print(" | XBee Python Library Receive Data Sample |")
+    print(" |       Wireless Sleep Monitoring         |")
+    print(" |         \"No Strings Attached!\"          |")
     print(" +-----------------------------------------+\n")
+    inp = input("Press any key to start! \nIf you want to see print statements hit v")
+    if inp=='v':
+        Verbose = True
+    else:
+        Verbose = False
 
     device = XBeeDevice(PORT, BAUD_RATE)
-    grapher = data()
-
-    try:
-        device.open()
-        def data_receive_callback(xbee_message):
-            data = ord(xbee_message.data.decode())
-            grapher.add_data(data)
-        device.add_data_received_callback(data_receive_callback)
-
-        print("Waiting for data...\n")
-        input()
-        
-
-
-    finally:
-        if device is not None and device.is_open():
-            device.close()
-            grapher.graph_data()
+    grapher = data(Verbose)
+    i=0
+    device.open()
+    device.flush_queues()
+    def data_receive_callback(xbee_message,sample): 
+        data = xbee_message.data.decode()
+        print(data)
+        for i in data:
+            print(i)
+    while i<30:
+        message = device.read_data()
+        if message!=None:
+            i+=1
+            try:
+                grapher.data_stream(message.data.decode())
+                #TODO do something about failed packets
+            except(ValueError,RuntimeError,TypeError):
+                print("Yikes checksome error look into this")
+    device.close()
+    grapher.graph_data()
+    grapher.data_spectrum()
 
 
 if __name__ == '__main__':
