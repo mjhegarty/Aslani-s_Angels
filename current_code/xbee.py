@@ -63,6 +63,8 @@ def main():
     device = XBeeDevice(PORT, BAUD_RATE)
     grapher = data(Verbose)
     i=0
+    packet_len = 40
+    raw_data=[]
     device.open()
     device.flush_queues()
     def data_receive_callback(xbee_message,sample): 
@@ -70,15 +72,21 @@ def main():
         print(data)
         for i in data:
             print(i)
-    while i<30:
+    print("Starting data stream")
+    while i<packet_len:
         message = device.read_data()
         if message!=None:
+            #if i==0:
+            #    raw_data= message.data.decode()
+           # else:
+            raw_data.append(message.data.decode())
             i+=1
-            try:
-                grapher.data_stream(message.data.decode())
-                #TODO do something about failed packets
-            except(ValueError,RuntimeError,TypeError):
-                print("Yikes checksome error look into this")
+            print("%d left" %(packet_len-i))
+    print("Data Stream finished, processing now")
+
+    for j in range(packet_len):    
+        grapher.data_stream(raw_data[j])
+        #TODO do something about failed packets
     device.close()
     grapher.graph_data()
     grapher.data_spectrum()
