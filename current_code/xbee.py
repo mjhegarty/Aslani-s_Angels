@@ -3,8 +3,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-
+#Parameters
 PORT = "/dev/ttyUSB0"
 BAUD_RATE= 230400
 
@@ -23,20 +22,20 @@ class data():
             #TODO make a dictionary of special chars that will be used for different sample types
             if(i!='$' and i!='\n' and i!=''):
                 self.sample = self.sample+i
-                #print(self.sample)
             elif(i=='$'):
-                self.add_data(int(self.sample))
-                if(self.v==True):
-                    print(self.sample)
-                    print("\n")
+                if self.sample!='':
+                    self.add_data(int(self.sample))
                 self.sample=''
     def add_data(self,data):
-        self.arr.append(data/1023)
+        #TODO make 5 into whatever our ref voltage is
+        self.arr.append((5*data)/1023)
     def graph_data(self):
-        #TODO add axis
         #TODO export into csv file
-        plt.plot(range(len(self.arr)),self.arr)
+        #Super sick generator for converting to time from sample count
+        plt.plot([x/500 for x in range(len(self.arr))],self.arr)
         plt.title("Data over time")
+        plt.xlabel("Time(s)")
+        plt.ylabel("Voltage(V)")
         plt.show()
     def data_spectrum(self):
         #TODO test this
@@ -47,49 +46,49 @@ class data():
         plt.show()
 
 
-
+raw_data=[]
 
 def main():
     print(" +-----------------------------------------+")
     print(" |       Wireless Sleep Monitoring         |")
     print(" |         \"No Strings Attached!\"          |")
     print(" +-----------------------------------------+\n")
-    inp = input("Press any enter to start! \nIf you want to see print statements hit v first")
+    inp = input("Press enter to start!\nPress enter a second time to stop!")
+    #ignore this for now
     if inp=='v':
         Verbose = True
     else:
         Verbose = False
 
+    #declaring device and grapher
     device = XBeeDevice(PORT, BAUD_RATE)
     grapher = data(Verbose)
-    i=0
-    packet_len = 40
-    raw_data=[]
-    device.open()
-    device.flush_queues()
-    def data_receive_callback(xbee_message,sample): 
-        data = xbee_message.data.decode()
-        print(data)
-        for i in data:
-            print(i)
-    print("Starting data stream")
-    while i<packet_len:
-        message = device.read_data()
-        if message!=None:
-            #if i==0:
-            #    raw_data= message.data.decode()
-           # else:
-            raw_data.append(message.data.decode())
-            i+=1
-            print("%d left" %(packet_len-i))
-    print("Data Stream finished, processing now")
+    try:
+        #Opening device
+        device.open()
+        device.flush_queues()
 
-    for j in range(packet_len):    
-        grapher.data_stream(raw_data[j])
-        #TODO do something about failed packets
-    device.close()
-    grapher.graph_data()
-    grapher.data_spectrum()
+        #Honestly no idea what a callback is. 
+        def data_receive_callback(xbee_message):
+                print(xbee_message.data.decode())
+                raw_data.append(xbee_message.data.decode())
+
+
+        #Think that this function basically runs this code A$AP when it gets a packet
+        device.add_data_received_callback(data_receive_callback)
+
+        print("Waiting for data...\n")
+        #This just has the device capture data until an input is entered
+        input()
+    #Finally block triggers after input ends
+    finally:
+        if device is not None and device.is_open():
+            #Closing device stops callbacks
+            device.close()
+            #For now I graph here, but I might have a second thread do this in parallel to the other thread
+            for j in raw_data:    
+                grapher.data_stream(j)
+            grapher.graph_data()
 
 
 if __name__ == '__main__':
