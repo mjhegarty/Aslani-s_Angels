@@ -36,6 +36,7 @@ class data():
         plt.title("Data over time")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
+        plt.ylim([0,5])
         plt.show()
     def data_spectrum(self):
         #TODO test this

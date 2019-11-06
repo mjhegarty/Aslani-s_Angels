@@ -1,0 +1,6 @@
+Dear ${PERSON_NAME},
+
+This is a test message of sending a file via python
+
+Thanks,
+Robo Mike
