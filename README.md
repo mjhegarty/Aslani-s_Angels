@@ -48,6 +48,15 @@ strings at the moment) and concatenates it to the `self.sample` string until it 
 has been read. When it reaches a $ it transforms `self.sample` into its original number between 0-5 and adds it to `self.arr`.
 Once all values have been read, `graph_data` is run which makes a plot of voltage vs time of the samples we captured.
 
+#### Sending email via python
+Following a guide I found [online](https://stackabuse.com/how-to-send-emails-with-gmail-using-python/) I figured out how to send 
+an email via python. The code I have included doesn't have the user name and password since it stores the password as plaintext, 
+so we will need to only write that in locally. The code at the moment sends `message.txt` to the addresses stored in `mycontacts.txt`,
+along with attaching `psk.png` I'm using gmail at the email service for now, but it doesn't play nice with SMTP messages at first,
+so to get it to work you need to go into your gmail account and [allow less secure apps to access your account](https://support.google.com/accounts/answer/6010255) to get it to work at first. The libaries used for this are native to python's
+base install so there is nothing special that you would need to get this to work. I would not reccomend using your real account 
+for doing this.
+
 ### Running the system
 
 #### Mircocontroller
