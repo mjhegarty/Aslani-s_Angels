@@ -4,7 +4,7 @@
 
 ### System Overview
 
-Codewise there are 2 sections, the on-patient mircocontroller and the Raspberry Pi.
+Codewise there are 2 sections, the on-patient micrcontroller and the Raspberry Pi.
 
 The microcontroller is an Arduino Uno r3, and it converts analog sensor data to digital data using
 `Analogread` inside a timer ISR that happens every 2ms aka sampling at 500Hz. This digital data is then passed
@@ -23,7 +23,6 @@ the portion of the code featured in `void loop()` runs. This code simply transmi
 for formatting(see Packet Formatting), then sets the status to 0 and waits for the next sample to be read
 
 ### Packet Formatting
-
 At the moment we are using a transmission mode called transparent trasmission that allows us to simply input 
 the data we would like to send and then the wireless module formats it for us. If possible I would like to stay in this mode
 since it is a lot easier to implement. The downside of this is that sometimes a sample right on the edge of two packets might have
@@ -40,6 +39,7 @@ These 2 parts are packet reading and packet processing
 Packet reading takes place inside of the try block in the main function in `xbee.py`. What it does is that it takes the function
 that I wrote called `data_receive_callback` and it has it run whenever a new packet arrives on the Pi. `data_receive_callback` 
 takes the incoming xbee message and stores its contents in a list called `raw_data`. This code runs until the enter key is pressed, after which the `finally` section of the code is run
+
 #### Packet Processing
 Packet processing is done using a class I wrote called `data` that has an array of all values its captured, called `self.arr` and
 a value holding the current data it is processing called `self.sample`. First the function called `data_stream` is run on all
@@ -59,7 +59,7 @@ for doing this.
 
 ### Running the system
 
-#### Mircocontroller
+#### Microcontroller
 
 * Copy the code written under in current_code/xbee_arduino/xbee_arduino.ino and write it to your device.
 * Attach wires from the arduino to the XBee for power(5V) and ground
