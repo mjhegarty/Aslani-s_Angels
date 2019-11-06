@@ -6,7 +6,7 @@
 
 Codewise there are 2 sections, the on-patient mircocontroller and the Raspberry Pi.
 
-The mircocontroller is an Arduino Uno r3, and it converts analog sensor data to digital data using
+The microcontroller is an Arduino Uno r3, and it converts analog sensor data to digital data using
 `Analogread` inside a timer ISR that happens every 2ms aka sampling at 500Hz. This digital data is then passed
 to an XBee module using serial port connection where it is transmitted OTA.
 
