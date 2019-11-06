@@ -48,7 +48,7 @@ strings at the moment) and concatenates it to the `self.sample` string until it 
 has been read. When it reaches a $ it transforms `self.sample` into its original number between 0-5 and adds it to `self.arr`.
 Once all values have been read, `graph_data` is run which makes a plot of voltage vs time of the samples we captured.
 
-#### Sending email via python
+#### Sending Email via Python
 Following a guide I found [online](https://stackabuse.com/how-to-send-emails-with-gmail-using-python/) I figured out how to send 
 an email via python. The code I have included doesn't have the user name and password since it stores the password as plaintext, 
 so we will need to only write that in locally. The code at the moment sends `message.txt` to the addresses stored in `mycontacts.txt`,
