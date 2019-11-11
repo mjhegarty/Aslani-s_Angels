@@ -36,7 +36,6 @@ class data():
         plt.title("Data over time")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
-        plt.ylim([0,5])
         plt.show()
     def data_spectrum(self):
         #TODO test this
@@ -45,6 +44,37 @@ class data():
         plt.plot(freq,abs(f))
         plt.title("spectrum of data")
         plt.show()
+    def data_avg(self):
+        data_sum = 0
+        for i in self.arr:
+            data_sum+=i
+        self.avg = data_sum/len(self.arr)
+        print("Avg value per sample is:")
+        print(self.avg)
+    def sampling_test_squarewave(self):
+        last_sample = None
+        #TODO make sure avg is defined
+        last_index = None
+        sample_count = 0
+        n_samples = 0
+        sample_sum = 0
+        for i,sample in enumerate(self.arr):
+            if last_sample!=None:
+                #Next if checks if sample is an 'edge'
+                if sample>self.avg and last_sample<self.avg :
+                    if last_index != None:
+                        n_samples = i-last_index
+                        sample_count += 1
+                        sample_sum += n_samples
+                    last_index = i
+            last_sample = sample
+        avg_n_samples = sample_sum/sample_count
+        fs = avg_n_samples*5 #TODO freq wave
+        print("Actual Measured sampling frequency is")
+        print(fs)
+        
+        
+
 
 
 raw_data=[]
@@ -89,7 +119,9 @@ def main():
             #For now I graph here, but I might have a second thread do this in parallel to the other thread
             for j in raw_data:    
                 grapher.data_stream(j)
+            grapher.data_avg()
             grapher.graph_data()
+            grapher.sampling_test_squarewave()
 
 
 if __name__ == '__main__':
