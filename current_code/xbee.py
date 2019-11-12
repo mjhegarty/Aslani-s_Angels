@@ -20,7 +20,7 @@ class data():
     def data_stream(self,packet):
         for i in packet:  
             #TODO make a dictionary of special chars that will be used for different sample types
-            if(i!='$' and i!='\n' and i!=''):
+            if(i!='$' and i!='\n' and i!='' and i!='~'):
                 self.sample = self.sample+i
             elif(i=='$'):
                 if self.sample!='':
@@ -69,7 +69,7 @@ class data():
                     last_index = i
             last_sample = sample
         avg_n_samples = sample_sum/sample_count
-        fs = avg_n_samples*5 #TODO freq wave
+        fs = avg_n_samples*20 #TODO freq wave
         print("Actual Measured sampling frequency is")
         print(fs)
         
