@@ -41,6 +41,7 @@ void loop(){
         cli();
         XBee.print(data);
         XBee.print("$");
+        XBee.print("^^^^^^^^^^^^^^^^^^^^");
         status=0;
         sei();
     }
@@ -49,5 +50,4 @@ ISR(TIMER1_COMPA_vect)
 {
     data = analogRead(A0);
     status=1;
-    //data2= (data2+1)%2000;
 }
