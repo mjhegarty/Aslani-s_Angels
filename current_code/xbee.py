@@ -32,6 +32,17 @@ class data():
     def graph_data(self):
         #TODO export into csv file
         #Super sick generator for converting to time from sample count
+        plt.subplot(3,1,1)
+        plt.plot([x/500 for x in range(len(self.arr))],self.arr)
+        plt.title("Data over time")
+        plt.xlabel("Time(s)")
+        plt.ylabel("Voltage(V)")
+        plt.subplot(3,1,2)
+        plt.plot([x/500 for x in range(len(self.arr))],self.arr)
+        plt.title("Data over time")
+        plt.xlabel("Time(s)")
+        plt.ylabel("Voltage(V)")
+        plt.subplot(3,1,2)
         plt.plot([x/500 for x in range(len(self.arr))],self.arr)
         plt.title("Data over time")
         plt.xlabel("Time(s)")
