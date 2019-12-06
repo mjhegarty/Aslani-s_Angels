@@ -13,53 +13,53 @@ BAUD_RATE= 230400
 
 class data():
     def __init__(self, v):
-        self.arr = []
-        #TODO make array of arrays for different sample types
+        #Badass dictionary of arrays(no idea if this works tbh
+        self.dict = {"EKG": [], "EEG":[], "PulseOX": [], "BodyX":[], "BodyZ":[]}
         self.sample=''
         self.v = v
     def data_stream(self,packet):
         for i in packet:  
-            #TODO make a dictionary of special chars that will be used for different sample types
             if(i!='$' and i!='\n' and i!='' and i!='~'):
                 self.sample = self.sample+i
             elif(i=='$'):
                 if self.sample!='':
-                    self.add_data(int(self.sample))
+                    self.add_data(int(self.sample), "EKG")
                 self.sample=''
-    def add_data(self,data):
+            #TODO make use cases for other header chars 
+    def add_data(self,data, key):
         #TODO make 5 into whatever our ref voltage is
-        self.arr.append((5*data)/1023)
+        self.dict[key].append((5*data)/1023)
     def graph_data(self):
         #TODO export into csv file
         #Super sick generator for converting to time from sample count
         plt.subplot(3,1,1)
-        plt.plot([x/500 for x in range(len(self.arr))],self.arr)
+        plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
         plt.title("Data over time")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.subplot(3,1,2)
-        plt.plot([x/500 for x in range(len(self.arr))],self.arr)
+        plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
         plt.title("Data over time")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.subplot(3,1,2)
-        plt.plot([x/500 for x in range(len(self.arr))],self.arr)
+        plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
         plt.title("Data over time")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.show()
     def data_spectrum(self):
         #TODO test this
-        f = np.fft.fft(self.arr)
+        f = np.fft.fft(self.dict["EKG"])
         freq = np.fft.fftfreq(f.shape[-1], d=.002)
         plt.plot(freq,abs(f))
         plt.title("spectrum of data")
         plt.show()
     def data_avg(self):
         data_sum = 0
-        for i in self.arr:
+        for i in self.dict["EKG"]:
             data_sum+=i
-        self.avg = data_sum/len(self.arr)
+        self.avg = data_sum/len(self.dict["EKG"])
         print("Avg value per sample is:")
         print(self.avg)
     def sampling_test_squarewave(self):
@@ -69,7 +69,7 @@ class data():
         sample_count = 0
         n_samples = 0
         sample_sum = 0
-        for i,sample in enumerate(self.arr):
+        for i,sample in enumerate(self.dict["EKG"]):
             if last_sample!=None:
                 #Next if checks if sample is an 'edge'
                 if sample>self.avg and last_sample<self.avg :
