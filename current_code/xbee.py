@@ -25,12 +25,11 @@ class data():
                 if self.sample!='':
                     self.add_data(int(self.sample), "EKG")
                 self.sample=''
-            #TODO make use cases for other header chars 
+            #TODO Sprint: make use cases for other header chars 
     def add_data(self,data, key):
-        #TODO make 5 into whatever our ref voltage is
+        #TODO Sprint: make 5 into whatever our ref voltage is
         self.dict[key].append((5*data)/1023)
     def graph_data(self):
-        #TODO export into csv file
         #Super sick generator for converting to time from sample count
         plt.subplot(3,1,1)
         plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
@@ -48,8 +47,12 @@ class data():
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.show()
+        #TODO Sprint: export into edf file
+        
+
+
+    #Sounds good doesn't work lol
     def data_spectrum(self):
-        #TODO test this
         f = np.fft.fft(self.dict["EKG"])
         freq = np.fft.fftfreq(f.shape[-1], d=.002)
         plt.plot(freq,abs(f))

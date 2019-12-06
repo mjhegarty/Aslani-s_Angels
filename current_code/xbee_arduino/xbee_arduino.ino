@@ -1,4 +1,4 @@
-
+//TODO Sprint: Include wire.h and init it and stuff
 #include <SoftwareSerial.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +7,9 @@ int sensorPin0 = A0;
 int sensorPin1 = A1;
 int data2=0;
 volatile int data=0;
+volatile int data1=0;
+volatile int data2=0;
+volatile int data3=0;
 volatile int status;
 void setup()
 {
@@ -36,7 +39,8 @@ void setup()
 
 
 void loop(){
-    //Serial.print("test");
+    //TODO Sprint: add logic for different header cases based on the value in status.
+    //Switch case?
     if (status==1){
         cli();
         XBee.print(data);
@@ -49,5 +53,8 @@ void loop(){
 ISR(TIMER1_COMPA_vect)
 {
     data = analogRead(A0);
+    //TODO Sprint: add logic for I2C sampling here
+    //TODO Sprint: add modulo logic for counters to go off based on when we want pulse ox
+    //Different cases change status to a different value 
     status=1;
 }
