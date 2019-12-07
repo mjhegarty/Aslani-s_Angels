@@ -41,7 +41,7 @@ class data():
         plt.title("Data over time")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
-        plt.subplot(3,1,2)
+        plt.subplot(3,1,3)
         plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
         plt.title("Data over time")
         plt.xlabel("Time(s)")
