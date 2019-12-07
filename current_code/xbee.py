@@ -21,29 +21,52 @@ class data():
         for i in packet:  
             if(i!='$' and i!='\n' and i!='' and i!='~'):
                 self.sample = self.sample+i
+            #In line with KISS my first idea is to have headers be footers printed at the end
             elif(i=='$'):
                 if self.sample!='':
                     self.add_data(int(self.sample), "EKG")
+                self.sample=''
+            elif(i=='%'):
+                if self.sample!='':
+                    self.add_data(int(self.sample), "PulseOX")
+                self.sample=''
+            elif(i=="#"):
+                if self.sample!='':
+                    self.add_data(int(self.sample), "BodyX")
+                self.sample=''
+            elif(i=="@"):
+                if self.sample!='':
+                    self.add_data(int(self.sample), "BodyZ")
                 self.sample=''
             #TODO Sprint: make use cases for other header chars 
     def add_data(self,data, key):
         #TODO Sprint: make 5 into whatever our ref voltage is
         self.dict[key].append((5*data)/1023)
     def graph_data(self):
-        #Super sick generator for converting to time from sample count
         plt.subplot(3,1,1)
+        #Makes our figures not look dumb
+        plt.tight_layout()
+        #Super sick generator for converting to time from sample count
         plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
-        plt.title("Data over time")
+        plt.title("EKG")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.subplot(3,1,2)
-        plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
-        plt.title("Data over time")
+        plt.tight_layout()
+        #TODO Sprint: change freq
+        plt.plot([x/500 for x in range(len(self.dict["PulseOX"]))],self.dict["PulseOX"])
+        plt.title("Pulse Ox")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.subplot(3,1,3)
-        plt.plot([x/500 for x in range(len(self.dict["EKG"]))],self.dict["EKG"])
-        plt.title("Data over time")
+        plt.tight_layout()
+        #TODO Sprint: change freq
+        plt.plot([x/500 for x in range(len(self.dict["BodyX"]))],self.dict["BodyX"])
+        
+        #Hold on is deault in matlibplot thats sick!
+        plt.plot([x/500 for x in range(len(self.dict["BodyZ"]))],self.dict["BodyZ"])
+        #TODO Sprint: spelling 
+        plt.title("Body posistion")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.show()
