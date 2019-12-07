@@ -19,7 +19,7 @@ class data():
         self.v = v
     def data_stream(self,packet):
         for i in packet:  
-            if(i!='$' and i!='\n' and i!='' and i!='~'):
+            if(i!="%" and i!= "#" and i !="@" and i!='$' and i!='\n' and i!='' and i!='~'):
                 self.sample = self.sample+i
             #In line with KISS my first idea is to have headers be footers printed at the end
             elif(i=='$'):
@@ -54,17 +54,17 @@ class data():
         plt.subplot(3,1,2)
         plt.tight_layout()
         #TODO Sprint: change freq
-        plt.plot([x/500 for x in range(len(self.dict["PulseOX"]))],self.dict["PulseOX"])
+        plt.plot([x/25 for x in range(len(self.dict["PulseOX"]))],self.dict["PulseOX"])
         plt.title("Pulse Ox")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.subplot(3,1,3)
         plt.tight_layout()
         #TODO Sprint: change freq
-        plt.plot([x/500 for x in range(len(self.dict["BodyX"]))],self.dict["BodyX"])
+        plt.plot([x for x in range(len(self.dict["BodyX"]))],self.dict["BodyX"])
         
         #Hold on is deault in matlibplot thats sick!
-        plt.plot([x/500 for x in range(len(self.dict["BodyZ"]))],self.dict["BodyZ"])
+        plt.plot([x for x in range(len(self.dict["BodyZ"]))],self.dict["BodyZ"])
         #TODO Sprint: spelling 
         plt.title("Body posistion")
         plt.xlabel("Time(s)")
