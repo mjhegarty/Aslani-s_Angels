@@ -38,7 +38,7 @@ def read_template(filename):
 def main():
     names, emails = get_contacts('mycontacts.txt') # read contacts
     message_template = read_template('message.txt')
-    files={"psk.png"}
+    files={"ekg.csv"}
 
     # set up the SMTP server
     s = smtplib.SMTP(host='smtp.gmail.com')

@@ -1,3 +1,4 @@
+import csv
 from digi.xbee.devices import XBeeDevice
 import matplotlib
 import matplotlib.pyplot as plt
@@ -14,7 +15,7 @@ BAUD_RATE= 230400
 class data():
     def __init__(self, v):
         #Badass dictionary of arrays(no idea if this works tbh
-        self.dict = {"EKG": [], "EEG":[], "PulseOX": [], "BodyX":[], "BodyZ":[]}
+        self.dict = {"EKG": [], "EEG":[], "PulseOX": [], "BodyX":[], "BodyZ":[], "SampleSquareWave":[]}
         self.sample=''
         self.v = v
     def data_stream(self,packet):
@@ -28,7 +29,7 @@ class data():
                 self.sample=''
             elif(i=='%'):
                 if self.sample!='':
-                    self.add_data(int(self.sample), "PulseOX")
+                    self.add_data(int(self.sample), "SampleSquareWave")
                 self.sample=''
             elif(i=="#"):
                 if self.sample!='':
@@ -38,10 +39,11 @@ class data():
                 if self.sample!='':
                     self.add_data(int(self.sample), "BodyZ")
                 self.sample=''
-            #TODO Sprint: make use cases for other header chars 
     def add_data(self,data, key):
-        #TODO Sprint: make 5 into whatever our ref voltage is
-        self.dict[key].append((5*data)/1023)
+        if(key=="EKG" or key=="SampleSquareWave"):
+            self.dict[key].append((3.3*data)/1023)
+        else :
+            self.dict[key].append(data)
     def graph_data(self):
         plt.subplot(3,1,1)
         #Makes our figures not look dumb
@@ -53,14 +55,12 @@ class data():
         plt.ylabel("Voltage(V)")
         plt.subplot(3,1,2)
         plt.tight_layout()
-        #TODO Sprint: change freq
-        plt.plot([x/25 for x in range(len(self.dict["PulseOX"]))],self.dict["PulseOX"])
-        plt.title("Pulse Ox")
+        plt.plot([x/500 for x in range(len(self.dict["SampleSquareWave"]))],self.dict["SampleSquareWave"])
+        plt.title("SampleSquareWave")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
         plt.subplot(3,1,3)
         plt.tight_layout()
-        #TODO Sprint: change freq
         plt.plot([x for x in range(len(self.dict["BodyX"]))],self.dict["BodyX"])
         
         #Hold on is deault in matlibplot thats sick!
@@ -69,9 +69,18 @@ class data():
         plt.title("Body posistion")
         plt.xlabel("Time(s)")
         plt.ylabel("Voltage(V)")
+        plt.legend(["X position", "Z Position"])
         plt.show()
         #TODO Sprint: export into edf file
         
+
+
+    def csv_data(self):
+        with open('ekg.csv', 'w') as csvfile:
+            writer = csv.writer(csvfile)
+            for i in self.dict["EKG"]:
+                writer.writerow([i])
+
 
 
     #Sounds good doesn't work lol
@@ -83,9 +92,9 @@ class data():
         plt.show()
     def data_avg(self):
         data_sum = 0
-        for i in self.dict["EKG"]:
+        for i in self.dict["SampleSquareWave"]:
             data_sum+=i
-        self.avg = data_sum/len(self.dict["EKG"])
+        self.avg = data_sum/len(self.dict["SampleSquareWave"])
         print("Avg value per sample is:")
         print(self.avg)
     def sampling_test_squarewave(self):
@@ -95,7 +104,7 @@ class data():
         sample_count = 0
         n_samples = 0
         sample_sum = 0
-        for i,sample in enumerate(self.dict["EKG"]):
+        for i,sample in enumerate(self.dict["SampleSquareWave"]):
             if last_sample!=None:
                 #Next if checks if sample is an 'edge'
                 if sample>self.avg and last_sample<self.avg :
@@ -159,6 +168,7 @@ def main():
             grapher.data_avg()
             grapher.graph_data()
             grapher.sampling_test_squarewave()
+            grapher.csv_data()
 
 
 if __name__ == '__main__':
