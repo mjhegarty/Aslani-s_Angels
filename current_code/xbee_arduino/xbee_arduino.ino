@@ -15,7 +15,6 @@ Adafruit_LSM9DS1 lsm = Adafruit_LSM9DS1();
 
 
 
-//TODO Sprint: Include wire.h and init it and stuff
 #include <SoftwareSerial.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -142,9 +141,6 @@ ISR(TIMER1_COMPA_vect)
     data = analogRead(A0);
     asm("nop");
     data1 = analogRead(A1);
-    //TODO Sprint: add logic for I2C sampling here
-    //TODO Sprint: add modulo logic for counters to go off based on when we want pulse ox
-    //Different cases change status to a different value
     counter++;
     if(counter%500 == 0){
       status = 3;
