@@ -7,7 +7,7 @@ def saveToEDF(filename,values):
 	ver = 0
 	patientID = 'patient'
 	recordID = 'record'
-	
+	#TODO this gives the time at the time of edf generation, not the time of data arrival
 	ts = time.localtime() # Structure -> (tm_year=2020, tm_mon=2, tm_mday=5, tm_hour=4, tm_min=7, tm_sec=59, tm_wday=2, tm_yday=36, tm_isdst=0)
 	startDate = time.strftime("%d.%m.%y",ts) # dd.mm.yy
 	startTime = time.strftime("%H.%M.%S",ts) # hh.mm.ss (24-hour clock)
