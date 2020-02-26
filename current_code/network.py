@@ -3,6 +3,7 @@ from digi.xbee.devices import XBeeDevice
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import ctypes
 
 #Parameters
 PORT = "/dev/ttyUSB0"
@@ -17,14 +18,16 @@ class data():
         #Badass dictionary of arrays(no idea if this works tbh
         self.dict = {"EKG": [], "EEG":[], "PulseOX": [], "BodyX":[], "BodyZ":[], "SampleSquareWave":[]}
         self.sample=''
-        self.data=''
+        self.data=bytearray()
         self.v = v
     def data_stream(self,packet):
         is_header = 1
         byte_count = 0
         #TODO fill this in actually
-        byte_options = { 4, 12, 12, 12}
+        byte_options = {8: 3}
         case = 0
+        data_logger = ctypes.CDLL("/home/mikey/projects/WirelessSleepMonitoring/current_code/form.so")
+#        data_logger.format_packet.argtypes(ctypes.POINTER(ctypes.c_uint))
 
         #Wait for starter packet
         for i in packet:
@@ -32,20 +35,21 @@ class data():
                 break
 
         for i in packet:  
-            #TODO make this not be ascii
 
             if is_header == 1:
                 case = i
                 byte_count = byte_options[i]
                 is_header = 0
+                self.data.append(i)
 
             else:
                 #TODO might have to do something else for appending
-                self.data = self.data+i
+                self.data.append(i)
                 byte_count = byte_count -1
                 #If all the bytes are read call the c organization function and set is header back to 1
                 if byte_count == 0 :
                     ##C function
+                    data_logger.format_packet(self.data)
                     self.data = ''
                     is_header = 1
 
@@ -159,7 +163,8 @@ def main():
         #Honestly no idea what a callback is. 
         def data_receive_callback(xbee_message):
             ##TODO check if this is a real function
-                raw_data.append(xbee_message.data())
+                raw_data.append(xbee_message.data)
+                print(xbee_message.data)
 
 
         #Think that this function basically runs this code A$AP when it gets a packet
