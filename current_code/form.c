@@ -10,7 +10,7 @@ int format_packet(uint8_t * packet){
     //Bitwise unpacking of j
     sig_1 = (uint16_t)packet[1] | (((uint16_t)packet[2] & 0xF0) << 4);
     sig_2 = (uint16_t)packet[3] | (((uint16_t)packet[2] & 0x0F) << 8);
-    printf("sig 1 is %u, sig 2 is %u", sig_1, sig_2);
+    printf("sig 1 is %u, sig 2 is %u\n", sig_1, sig_2);
     return 0;
 }
 

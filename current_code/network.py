@@ -27,7 +27,7 @@ class data():
         byte_options = {8: 3}
         case = 0
         data_logger = ctypes.CDLL("/home/mikey/projects/WirelessSleepMonitoring/current_code/form.so")
-#        data_logger.format_packet.argtypes(ctypes.POINTER(ctypes.c_uint))
+        data_logger.format_packet.argtypes = [ctypes.POINTER(ctypes.c_char)]
 
         #Wait for starter packet
         for i in packet:
@@ -49,7 +49,7 @@ class data():
                 #If all the bytes are read call the c organization function and set is header back to 1
                 if byte_count == 0 :
                     ##C function
-                    data_logger.format_packet(self.data)
+                    data_logger.format_packet(ctypes.char_array.from_buffer(arr)self.data)
                     self.data = ''
                     is_header = 1
 
