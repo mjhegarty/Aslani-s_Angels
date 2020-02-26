@@ -20,38 +20,42 @@ class data():
         self.sample=''
         self.data=bytearray()
         self.v = v
-    def data_stream(self,packet):
+    def data_stream(self,stream):
         is_header = 1
         byte_count = 0
+        start = 0
         #TODO fill this in actually
         byte_options = {8: 3}
         case = 0
         data_logger = ctypes.CDLL("/home/mikey/projects/WirelessSleepMonitoring/current_code/form.so")
         data_logger.format_packet.argtypes = [ctypes.POINTER(ctypes.c_char)]
-
+        for packet in stream: 
         #Wait for starter packet
-        for i in packet:
-            if (i==11111111):
-                break
+            for i in packet:  
+                if start == 0:
+                    if (i==255):
+                        start = 1
 
-        for i in packet:  
+                else:
+                    if is_header == 1:
+                        case = i
+                        #byte_count = byte_options[i]
+                        byte_count = 3
+                        char_array = ctypes.c_char * (byte_count+1)
+                        is_header = 0
+                        self.data.append(i)
 
-            if is_header == 1:
-                case = i
-                byte_count = byte_options[i]
-                is_header = 0
-                self.data.append(i)
-
-            else:
-                #TODO might have to do something else for appending
-                self.data.append(i)
-                byte_count = byte_count -1
-                #If all the bytes are read call the c organization function and set is header back to 1
-                if byte_count == 0 :
-                    ##C function
-                    data_logger.format_packet(ctypes.char_array.from_buffer(arr)self.data)
-                    self.data = ''
-                    is_header = 1
+                    else:
+                        #TODO might have to do something else for appending
+                        self.data.append(i)
+                        byte_count = byte_count -1
+                        #If all the bytes are read call the c organization function and set is header back to 1
+                        if byte_count == 0 :
+                            print(self.data)
+                            ##C function
+                            data_logger.format_packet(char_array.from_buffer(self.data))
+                            self.data = bytearray()
+                            is_header = 1
 
 
     def add_data(self,data, key):
@@ -179,12 +183,11 @@ def main():
             #Closing device stops callbacks
             device.close()
             #For now I graph here, but I might have a second thread do this in parallel to the other thread
-            for j in raw_data:    
-                grapher.data_stream(j)
-            grapher.data_avg()
-            grapher.graph_data()
-            grapher.sampling_test_squarewave()
-            grapher.csv_data()
+            grapher.data_stream(raw_data)
+            #grapher.data_avg()
+            #grapher.graph_data()
+            #grapher.sampling_test_squarewave()
+            #grapher.csv_data()
 
 
 if __name__ == '__main__':
